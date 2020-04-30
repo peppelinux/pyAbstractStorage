@@ -77,9 +77,9 @@ for i in absdb:
 Further customizations
 ----------------------
 
-You should Inherit `AbstractStorage` to add any data handlers from data fetched or saved in from and to database.
-The behaviour on the Input/Output login explained in the __Usage Example__ can be customized in this latter or in some
-customized `asbstorage.storages` classes.
+You should Inherit `AbstractStorage` to add data handlers to have customization from data fetched or saved, from and to a database.
+The behaviour explained in the __Usage Example__ can be customized in a AbstractStorage child or in a
+customized `asbstorage.storages` class.
 
 Authors
 -------
