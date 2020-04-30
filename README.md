@@ -10,7 +10,7 @@ To start using this POC you have to create or edit these two files:
 - `settings.py` - connections urls and handlers definitions
 - `models.py` - schemas and utilities related to the database setup
 - `pip install sqlalchemy` - it's the RDBMS Object Relational Mapper used in this example
-- `git clone $this_repository` - to get the example files
+- `git clone $this_repository` - the example files
 
 If you want to test this project without installing it as a library, 
 just open a python terminal in the current directory and type the followings
