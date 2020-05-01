@@ -13,6 +13,8 @@ To start using this POC you have to create or edit these two files:
 - `git clone $this_repository` - the example files
 
 
+**Creating your Database**
+
 Create the Schemas defined `db_setup.py`, in the database configured in `settings.py`.
 This should be done for RDBMS schemas or ElasticSearch indexes setup,
 NoSQL and other kinds of storages should not need to create a specific database:
@@ -23,7 +25,7 @@ from db_setup import create_database
 create_database(ABS_STORAGE_SQLALCHEMY)
 ````
 
-Usage example
+**Usage example**
 ````
 from abstorage.base import AbstractStorage  
 from settings import ABS_STORAGE_SQLALCHEMY
@@ -69,7 +71,7 @@ for i in absdb:
 Further customizations
 ----------------------
 
-You should Inherit `AbstractStorage` to add data handlers to have customization from data fetched or saved, from and to a database.
+You can Inherit `AbstractStorage` and add data handlers to have customization for data, fetched or saved, from and to a database.
 The behaviour explained in the __Usage Example__ can be customized in a AbstractStorage child or in a
 customized `asbstorage.storages` class.
 
