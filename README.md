@@ -8,26 +8,18 @@ plugged in existing applications, in particular those who works with dictionarie
 
 To start using this POC you have to create or edit these two files:
 - `settings.py` - connections urls and handlers definitions
-- `models.py` - schemas and utilities related to the database setup
+- `db_setup.py` - schemas and utilities related to the database setup
 - `pip install sqlalchemy` - it's the RDBMS Object Relational Mapper used in this example
 - `git clone $this_repository` - to get the example files
 
-If you want to test this project without installing it as a library, 
-just open a python terminal in the current directory and type the followings
-````
-import os
-import sys
 
-sys.path.append(os.getcwd()) 
-`````
-
-Create the Schemas defined in `models.py`, in the database configured in `settings.py`.
+Create the Schemas defined `db_setup.py`, in the database configured in `settings.py`.
 This should be done for RDBMS schemas or ElasticSearch indexes setup,
 NoSQL and other kinds of storages should not need to create a specific database:
 ````
 from settings import ABS_STORAGE_SQLALCHEMY
 
-from models import create_database
+from db_setup import create_database
 create_database(ABS_STORAGE_SQLALCHEMY)
 ````
 
