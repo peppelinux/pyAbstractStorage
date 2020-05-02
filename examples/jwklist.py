@@ -57,6 +57,9 @@ class JWKList(AbstractStorage):
         #_list.remove(item)
         #self.set(_list)
 
+    def delete(self, name_id):
+        return self.storage.delete(name_id, k='owner')
+    
     def get(self, name_id) -> List[JWK]:
         return [self.io.deserialize(i) for i in self.storage.get(name_id)]
 
@@ -83,10 +86,11 @@ class JWKList(AbstractStorage):
         else:
             self.set(name_id, item)
 
-    def extend(self, name_id, items):
-        _list = self.storage.get(name_id)
-        _list.extend(name_id, items)
-        self.update(name_id, _list)
+    # is it needed?
+    #def extend(self, name_id, items):
+        #_list = self.storage.get(name_id)
+        #_list.extend(name_id, items)
+        #self.update(name_id, _list)
 
     def copy(self):
         raise NotImplemented()
@@ -94,12 +98,11 @@ class JWKList(AbstractStorage):
 
 # POC
 _list = JWKList(ABS_STORAGE_SQLALCHEMY)
-_list()
-
-# also added repr method
-_list
-
-rsa_key = new_rsa_key()
 
 _list.set('ciao', new_rsa_key())
+_list
+
 _list.append('ciao', new_rsa_key())
+_list
+
+_list.delete('ciao')
