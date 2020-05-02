@@ -12,6 +12,9 @@ class AbstractStorage(object):
     def set(self, k, v):
         return self.storage.set(k, v)
 
+    def update(self, k, v):
+        return self.storage.update(k, v)
+
     def delete(self, k, v):
         return self.storage.delete(v, k=k)
 
@@ -26,6 +29,9 @@ class AbstractStorage(object):
 
     def __call__(self):
         return self.storage() 
+
+    def __repr__(self):
+        return self.__str__() 
     
     def __len__(self):
         return len(self.storage())

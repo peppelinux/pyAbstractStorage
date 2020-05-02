@@ -19,23 +19,48 @@ class AbstractStorageSQLAlchemy:
 
     def get(self, k):
         entries = self.session.query(self.table).filter_by(owner=k).all()  
+        result = self._data_from_db(entries)
+        return result
+
+    def _data_from_db(self, entries):
         result = []
         for entry in entries:
             try:
-                result.append(json.loads(entry.data))
+                data = json.loads(entry.data)
+                if isinstance(data, list):
+                    result.extend(data)
+                else:
+                    result.append(data)
             except:
                 result.append(entry.data)
         return result
         
-    def set(self, k, v):
+    def _data_to_db(self, v):
         if isinstance(v, dict) or isinstance(v, list):
             value = json.dumps(v)
         else:
             value = v
+        return value
 
+    def set(self, k, v):
+        value = self._data_to_db(v)
         ins = self.table.insert().values(owner=k,
-                                        data=value)
+                                         data=value)
         self.session.execute(ins)
+        self.session.commit()
+        return 1
+
+    def update(self, k, v, col_match='owner', col_value='data'):
+        """
+            k = value_to_match
+            v = value_to_be_substituted
+        """
+        value = self._data_to_db(v)
+        table_column = getattr(self.table.c, col_match)
+        upquery = self.table.update().\
+                        where(table_column == k).\
+                        values(**{col_value:value})
+        self.session.execute(upquery)
         self.session.commit()
         return 1
 

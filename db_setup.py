@@ -15,8 +15,8 @@ class Thing(Base):
                            primary_key=True)
     owner = alchemy_db.Column(alchemy_db.String(80),
                               unique=False, nullable=False)
-    data = alchemy_db.Column(alchemy_db.String(2048),
-                             unique=True, nullable=False)
+    data = alchemy_db.Column(alchemy_db.String(4096),
+                             unique=False, nullable=False)
     created = alchemy_db.Column(alchemy_db.DateTime,
                                 default=datetime.datetime.utcnow)
 
