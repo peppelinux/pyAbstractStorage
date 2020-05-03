@@ -26,27 +26,27 @@ class JWK_IO:
 
 
 class ASList(object):
-    def __init__(self, id, storage_conf, io_class=None, value=None):
-        self.id = id
+    def __init__(self, name, storage_conf, io_class=None, value=None):
+        self.name = name
         self.storage = AbstractStorage(storage_conf)
         if value:
-            self.storage.set(self.id, value)
+            self.storage.set(self.name, value)
         self.io = io_class()
 
     def __len__(self):
-        return len(self.storage.get(self.id))
+        return len(self.storage.get(self.name))
 
     def __contains__(self, jwk):
         _jwk = jwk.serialize(private=True)
-        _jwks = self.storage.get(self.id)
+        _jwks = self.storage.get(self.name)
         if _jwk in _jwks:
             return True
 
     def __del__(self):
-        self.storage.__delitem__(self.id)
+        self.storage.__delitem__(self.name)
 
     def __iter__(self):
-        for v in self.storage.get(self.id):
+        for v in self.storage.get(self.name):
             yield self.io.deserialize(v)
 
     def __str__(self):
@@ -64,7 +64,7 @@ class ASList(object):
     def _get_list(self):
         res = []
         # get returns list of lists, right now
-        ll = self.storage.get(self.id)
+        ll = self.storage.get(self.name)
         for li in ll:
             if isinstance(li, dict):
                 res.append(self.io.deserialize(li))
@@ -76,7 +76,7 @@ class ASList(object):
 
     def _update(self, items):
         value = [self.io.serialize(v) for v in items]
-        self.storage.update(self.id, value)
+        self.storage.update(self.name, value)
 
     def extend(self, items):
         _list = self._get_list()
@@ -90,7 +90,7 @@ class ASList(object):
         _list = self._get_list()
         if _list:
             _list.remove(item)
-            self.storage.update(self.id, _list)
+            self.storage.update(self.name, _list)
 
     def copy(self):
         raise NotImplemented()
@@ -100,7 +100,7 @@ class ASList(object):
 
     def set(self, items: List[JWK]):
         value = [self.io.serialize(v) for v in items]
-        self.storage.set(self.id, value)
+        self.storage.set(self.name, value)
 
 
 if __name__ == "__main__":
