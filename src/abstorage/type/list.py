@@ -90,7 +90,7 @@ class ASList(object):
         _list = self._get_list()
         if _list:
             _list.remove(item)
-            self.storage.update(self.name, _list)
+            self._update(_list)
 
     def copy(self):
         raise NotImplemented()
@@ -100,7 +100,11 @@ class ASList(object):
 
     def set(self, items: List[JWK]):
         value = [self.io.serialize(v) for v in items]
-        self.storage.set(self.name, value)
+        pre = self.storage.get(self.name)
+        if pre:
+            self.storage.update(self.name, value)
+        else:
+            self.storage.set(self.name, value)
 
 
 if __name__ == "__main__":
