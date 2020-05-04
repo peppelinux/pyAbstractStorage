@@ -1,15 +1,14 @@
 import datetime
-import sqlalchemy as alchemy_db
 
+import sqlalchemy as alchemy_db
 from sqlalchemy.ext.declarative import declarative_base
-from settings import ABS_STORAGE_SQLALCHEMY as conf_dict
 
 Base = declarative_base()
 
 
 class Thing(Base):
     __tablename__ = 'thing'
-    
+
     id = alchemy_db.Column(alchemy_db.Integer,
                            alchemy_db.Sequence('thing_id_seq'),
                            primary_key=True)
@@ -22,7 +21,6 @@ class Thing(Base):
 
     def __repr__(self):
         return '<Thing owned by %r>' % self.owner
-
 
 
 def create_database(conf_dict):
