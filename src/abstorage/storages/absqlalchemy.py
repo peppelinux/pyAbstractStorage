@@ -1,7 +1,6 @@
 import datetime
 import json
 import sqlalchemy as alchemy_db
-from abstorage.db_setup import Base
 
 from sqlalchemy.orm import sessionmaker
 
@@ -10,7 +9,6 @@ class AbstractStorageSQLAlchemy:
     def __init__(self, conf_dict):
         self.engine = alchemy_db.create_engine(conf_dict['url'])
         self.connection = self.engine.connect()
-        Base.metadata.create_all(self.engine)
         self.metadata = alchemy_db.MetaData()
         self.table = alchemy_db.Table(conf_dict['params']['table'],
                                       self.metadata, autoload=True,

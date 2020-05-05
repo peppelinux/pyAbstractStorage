@@ -1,4 +1,4 @@
-from storages.absqlalchemy import AbstractStorageSQLAlchemy
+from abstorage.storages.absqlalchemy import AbstractStorageSQLAlchemy
 
 
 ABS_STORAGE_SQLALCHEMY = dict(

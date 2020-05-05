@@ -1,6 +1,6 @@
 from typing import List
 
-from base import AbstractStorage
+from abstorage.base import AbstractStorage
 from settings import ABS_STORAGE_SQLALCHEMY
 
 from cryptojwt.jwk import JWK
@@ -65,7 +65,7 @@ class JWKList(AbstractStorage):
 
     def _data_to_db(self, data):
         if isinstance(data, list):
-            value = [self.io.serialize(i) for i in items]
+            value = [self.io.serialize(i) for i in data]
         else:
             value = self.io.serialize(data)
         return value
