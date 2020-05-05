@@ -9,8 +9,8 @@ setup(
     author=__author__,
     author_email="giuseppe.demarco@unical.it",
     license="Apache 2.0",
-    packages=["abstorage", "abstorage/storages"],
-    package_dir={"": "abstorage"},
+    packages=["abstorage", "abstorage/storages", "abstorage/type"],
+    package_dir={"": "src"},
     classifiers=[
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: Apache Software License",

@@ -1,6 +1,6 @@
 from typing import List
 
-from abstorage.base import AbstractStorage
+from base import AbstractStorage
 from settings import ABS_STORAGE_SQLALCHEMY
 
 from cryptojwt.jwk import JWK
@@ -59,7 +59,7 @@ class JWKList(AbstractStorage):
 
     def delete(self, name_id):
         return self.storage.delete(name_id, k='owner')
-    
+
     def get(self, name_id) -> List[JWK]:
         return [self.io.deserialize(i) for i in self.storage.get(name_id)]
 
@@ -69,7 +69,7 @@ class JWKList(AbstractStorage):
         else:
             value = self.io.serialize(data)
         return value
-        
+
     def set(self, name, items: List[JWK]):
         value = self._data_to_db(items)
         pre = self.storage.get(name)

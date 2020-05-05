@@ -1,6 +1,7 @@
 import datetime
 import json
 import sqlalchemy as alchemy_db
+from abstorage.db_setup import Base
 
 from sqlalchemy.orm import sessionmaker
 
@@ -9,7 +10,7 @@ class AbstractStorageSQLAlchemy:
     def __init__(self, conf_dict):
         self.engine = alchemy_db.create_engine(conf_dict['url'])
         self.connection = self.engine.connect()
-
+        Base.metadata.create_all(self.engine)
         self.metadata = alchemy_db.MetaData()
         self.table = alchemy_db.Table(conf_dict['params']['table'],
                                       self.metadata, autoload=True,
@@ -18,7 +19,7 @@ class AbstractStorageSQLAlchemy:
         self.session = Session()
 
     def get(self, k):
-        entries = self.session.query(self.table).filter_by(owner=k).all()  
+        entries = self.session.query(self.table).filter_by(owner=k).all()
         result = self._data_from_db(entries)
         return result
 
@@ -34,7 +35,7 @@ class AbstractStorageSQLAlchemy:
             except:
                 result.append(entry.data)
         return result
-        
+
     def _data_to_db(self, v):
         if isinstance(v, dict) or isinstance(v, list):
             value = json.dumps(v)
@@ -78,9 +79,9 @@ class AbstractStorageSQLAlchemy:
         for entry in self():
             if k in entry:
                 return 1
-    
+
     def __call__(self):
-        return self.session.query(self.table).all() 
+        return self.session.query(self.table).all()
 
     def __iter__(self):
         return self.session.query(self.table)
@@ -96,7 +97,7 @@ class AbstractStorageSQLAlchemy:
                     l.append(element)
             entries.append(l)
         return json.dumps(entries, indent=2)
-    
+
     def flush(self):
         """
         make a decision here ...
