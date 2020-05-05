@@ -1,4 +1,5 @@
 from typing import List
+from uuid import uuid4
 
 from cryptojwt.jwk import JWK
 from cryptojwt.jwk.jwk import key_from_jwk_dict
@@ -26,8 +27,9 @@ class JWK_IO:
 
 
 class ASList(object):
-    def __init__(self, name, storage_conf, io_class=None, value=None):
-        self.name = name
+    def __init__(self, storage_conf, name='', io_class=None, value=None):
+        self.name = name or str(uuid4())
+        self._conf = storage_conf
         self.storage = AbstractStorage(storage_conf)
         if value:
             self.storage.set(self.name, value)
@@ -55,11 +57,11 @@ class ASList(object):
 
     def append(self, item):
         _list = self._get_list()
-        if _list:
+        if _list is None:
+            self.set([item])
+        else:
             _list.append(item)
             self._update(_list)
-        else:
-            self.set([item])
 
     def _get_list(self):
         res = []
@@ -76,15 +78,16 @@ class ASList(object):
 
     def _update(self, items):
         value = [self.io.serialize(v) for v in items]
-        self.storage.update(self.name, value)
+        del self.storage[self.name]
+        self.storage.set(self.name, value)
 
     def extend(self, items):
         _list = self._get_list()
-        if _list:
+        if _list is None:
+            self.set(items)
+        else:
             _list.extend(items)
             self._update(_list)
-        else:
-            self.set(items)
 
     def remove(self, item):
         _list = self._get_list()
@@ -93,18 +96,19 @@ class ASList(object):
             self._update(_list)
 
     def copy(self):
-        raise NotImplemented()
+        _new = ASList(self._conf, io_class=self.io.__class__)
+        _new.set(self.get())
+        return _new
 
     def get(self) -> List[JWK]:
         return self._get_list()
 
     def set(self, items: List[JWK]):
         value = [self.io.serialize(v) for v in items]
-        pre = self.storage.get(self.name)
-        if pre:
-            self.storage.update(self.name, value)
-        else:
-            self.storage.set(self.name, value)
+        if self.storage.get(self.name):
+            del self.storage[self.name]
+
+        self.storage.set(self.name, value)
 
 
 if __name__ == "__main__":
@@ -118,7 +122,7 @@ if __name__ == "__main__":
         handler=AbstractStorageSQLAlchemy
     )
 
-    _list = ASList('ciao', ABS_STORAGE_SQLALCHEMY, JWK_IO)
+    _list = ASList(ABS_STORAGE_SQLALCHEMY, io_class=JWK_IO)
 
     _rsa1 = new_rsa_key()
     _rsa2 = new_rsa_key()
