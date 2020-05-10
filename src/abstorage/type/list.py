@@ -1,36 +1,61 @@
-from typing import List
 from uuid import uuid4
-
-from cryptojwt.jwk import JWK
-from cryptojwt.jwk.jwk import key_from_jwk_dict
 
 from abstorage.base import AbstractStorage
 from abstorage.storages.absqlalchemy import AbstractStorageSQLAlchemy
 
+class SimpleList():
+    def __init__(self, value=None):
+        if value is None:
+            self.db = []
+        else:
+            self.set(value)
 
-class JWK_IO:
-    @staticmethod
-    def serialize(key: JWK) -> dict:
-        _dict = key.serialize(private=True)
-        inactive = key.inactive_since
-        if inactive:
-            _dict['inactive_since'] = inactive
-        return _dict
+    def __len__(self):
+        return len(self.db)
 
-    @staticmethod
-    def deserialize(jwk: dict) -> JWK:
-        k = key_from_jwk_dict(jwk)
-        inactive = jwk.get("inactive_since", 0)
-        if inactive:
-            k.inactive_since = inactive
-        return k
+    def __contains__(self, item):
+        return item in self.db
+
+    def __del__(self):
+        del self.db
+
+    def __iter__(self):
+        for i in self.db:
+            yield i
+
+    def __str__(self):
+        return str(self.db)
+
+    def append(self, item):
+        self.db.append(item)
+
+    def extend(self, items):
+        self.db.extend(items)
+
+    def remove(self, item):
+        self.db.remove(item)
+
+    def get(self):
+        return self.db
+
+    def set(self, value):
+        if isinstance(value, list):
+            self.db = value
+        else:
+            raise ValueError("Wrong value type")
+
+    def copy(self):
+        return SimpleList(self.db[:])
+
+    def close(self):
+        return
 
 
 class ASList(object):
     def __init__(self, storage_conf, name='', io_class=None, value=None):
         self.name = name or str(uuid4())
-        self._conf = storage_conf
         self.storage = AbstractStorage(storage_conf)
+        self._conf = storage_conf
         if value:
             self.storage.set(self.name, value)
         self.io = io_class()
@@ -100,10 +125,10 @@ class ASList(object):
         _new.set(self.get())
         return _new
 
-    def get(self) -> List[JWK]:
+    def get(self):
         return self._get_list()
 
-    def set(self, items: List[JWK]):
+    def set(self, items):
         value = [self.io.serialize(v) for v in items]
         if self.storage.get(self.name):
             del self.storage[self.name]
